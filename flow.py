@@ -1,5 +1,4 @@
 """High-level abstraction for Flows of multiple OpenFlow versions.
-
 Use common fields of FlowStats/FlowMod of supported OF versions. ``match`` and
 ``actions`` fields are different, so Flow, Action and Match related classes are
 inherited in v0x01 and v0x04 modules.
@@ -36,7 +35,6 @@ class FlowFactory(ABC):  # pylint: disable=too-few-public-methods
 
 class FlowBase(ABC):  # pylint: disable=too-many-instance-attributes
     """Class to abstract a Flow to switches.
-
     This class represents a Flow installed or to be installed inside the
     switch. A flow, in this case is represented by a Match object and a set of
     actions that should occur in case any match happen.
@@ -54,7 +52,6 @@ class FlowBase(ABC):  # pylint: disable=too-many-instance-attributes
                  idle_timeout=0, hard_timeout=0, cookie=0, actions=None,
                  stats=None):
         """Assign parameters to attributes.
-
         Args:
             switch (kytos.core.switch.Switch): Switch ID is used to uniquely
                 identify a flow.
@@ -82,14 +79,11 @@ class FlowBase(ABC):  # pylint: disable=too-many-instance-attributes
     @property
     def id(self):  # pylint: disable=invalid-name
         """Return this flow unique identifier.
-
         Calculate an md5 hash based on this object's modified json string. The
         json for ID calculation excludes ``stats`` attribute that changes over
         time.
-
         Returns:
             str: Flow unique identifier (md5sum).
-
         """
         flow_str = self.as_json(sort_keys=True, include_id=False)
         md5sum = md5()
@@ -98,15 +92,12 @@ class FlowBase(ABC):  # pylint: disable=too-many-instance-attributes
 
     def as_dict(self, include_id=True):
         """Return the Flow as a serializable Python dictionary.
-
         Args:
             include_id (bool): Default is ``True``. Internally, it is set to
                 ``False`` when calculating the flow ID that is based in this
                 dictionary's JSON string.
-
         Returns:
             dict: Serializable dictionary.
-
         """
         flow_dict = {
             'switch': self.switch.id,
@@ -153,16 +144,13 @@ class FlowBase(ABC):  # pylint: disable=too-many-instance-attributes
 
     def as_json(self, sort_keys=False, include_id=True):
         """Return the representation of a flow in JSON format.
-
         Args:
             sort_keys (bool): ``False`` by default (Python's default). Sorting
                 is used, for example, to calculate the flow ID.
             include_id (bool): ``True`` by default. Internally, the ID is not
                 included while calculating it.
-
         Returns:
             string: Flow JSON string representation.
-
         """
         return json.dumps(self.as_dict(include_id), sort_keys=sort_keys)
 
@@ -249,7 +237,6 @@ class ActionFactoryBase(ABC):
     @classmethod
     def from_dict(cls, action_dict):
         """Build the proper Action from a dictionary.
-
         Args:
             action_dict (dict): Action attributes.
         """
@@ -260,14 +247,12 @@ class ActionFactoryBase(ABC):
     @classmethod
     def from_of_action(cls, of_action):
         """Build the proper Action from a pyof action.
-
         Args:
             of_action (pyof action): Action from python-openflow.
         """
         of_class = type(of_action)
         action_class = cls._action_class.get(of_class)
         return action_class.from_of_action(of_action) if action_class else None
-
 
 class MatchBase:  # pylint: disable=too-many-instance-attributes
     """Base class with common high-level Match fields."""
@@ -341,7 +326,6 @@ class Stats:
 
     def update(self, of_stats):
         """Given a pyof stats object, update attributes' values.
-
         Avoid object creation and memory leak. pyof values are GenericType
         instances whose native values can be accessed by `.value`.
         """
